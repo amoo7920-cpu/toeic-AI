@@ -1,0 +1,12 @@
+{
+  "name": "@toeic/admin",
+  "private": true,
+  "version": "0.1.0",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "dependencies": {
+    "@toeic/auth": "*",
+    "@toeic/shared": "*",
+    "react": "^18.3.1"
+  }
+}

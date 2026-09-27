@@ -1,0 +1,28 @@
+{
+  "name": "toeic-speaking-app",
+  "private": true,
+  "version": "0.1.0",
+  "workspaces": [
+    "shared",
+    "00-auth",
+    "01-admin",
+    "02-exam",
+    "03-answers",
+    "04-study",
+    "app"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace=app",
+    "build": "npm run build --workspace=app",
+    "sync-shared": "node scripts/sync-shared.mjs",
+    "supabase:types": "supabase gen types typescript --linked > shared/types.ts"
+  },
+  "devDependencies": {
+    "supabase": "^2.118.0",
+    "typescript": "^5.6.3"
+  },
+  "overrides": {
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
+  }
+}

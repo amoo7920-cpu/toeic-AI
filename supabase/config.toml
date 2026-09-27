@@ -1,0 +1,32 @@
+project_id = "toeic-speaking-app"
+
+[api]
+enabled = true
+port = 54321
+
+[db]
+port = 54322
+
+[studio]
+enabled = true
+port = 54323
+
+[auth]
+enabled = true
+site_url = "http://localhost:5173"
+additional_redirect_urls = ["http://localhost:5173"]
+enable_confirmations = true
+
+[auth.email]
+enable_signup = true
+double_confirm_changes = true
+enable_confirmations = true
+
+[edge_runtime]
+enabled = true
+
+[functions.generate-question-set]
+verify_jwt = true
+
+[functions.score-answer]
+verify_jwt = true
