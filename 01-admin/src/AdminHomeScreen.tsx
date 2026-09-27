@@ -1,5 +1,8 @@
 import { useState } from "react";
 import { GenerateQuestionsScreen } from "./GenerateQuestionsScreen";
+import { QuestionManageScreen } from "./QuestionManageScreen";
+import { UserManageScreen } from "./UserManageScreen";
+import { GenerationJobsScreen } from "./GenerationJobsScreen";
 
 const TABS = [
   { key: "generate", label: "문제 추가" },
@@ -9,14 +12,6 @@ const TABS = [
 ] as const;
 
 type TabKey = (typeof TABS)[number]["key"];
-
-function Placeholder({ label }: { label: string }) {
-  return (
-    <div className="px-4 py-6 text-sm text-gray-500 dark:text-gray-400">
-      {label} 화면은 다음 단계에서 구현합니다.
-    </div>
-  );
-}
 
 export function AdminHomeScreen() {
   const [tab, setTab] = useState<TabKey>("generate");
@@ -39,9 +34,9 @@ export function AdminHomeScreen() {
         ))}
       </div>
       {tab === "generate" && <GenerateQuestionsScreen />}
-      {tab === "manage" && <Placeholder label="문제 관리" />}
-      {tab === "users" && <Placeholder label="사용자 관리" />}
-      {tab === "jobs" && <Placeholder label="생성 이력" />}
+      {tab === "manage" && <QuestionManageScreen />}
+      {tab === "users" && <UserManageScreen />}
+      {tab === "jobs" && <GenerationJobsScreen />}
     </div>
   );
 }
