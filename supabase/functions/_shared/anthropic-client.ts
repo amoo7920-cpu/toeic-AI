@@ -27,7 +27,7 @@ export async function callClaude(params: ClaudeCallParams): Promise<string> {
     },
     body: JSON.stringify({
       model: params.model,
-      max_tokens: 8192,
+      max_tokens: 16000,
       system: params.systemPrompt,
       messages: [{ role: "user", content }],
     }),
