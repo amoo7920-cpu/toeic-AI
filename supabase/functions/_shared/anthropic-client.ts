@@ -7,6 +7,10 @@ export interface ClaudeCallParams {
   imageUrls?: (string | null | undefined)[];
 }
 
+// JSON 응답을 확실히 받기 위해 assistant 턴을 "{"로 미리 채워(prefill) 이어쓰게 만든다.
+// 이렇게 하면 마크다운 코드펜스나 설명 문구가 앞에 붙는 걸 원천 차단할 수 있다.
+const JSON_PREFILL = "{";
+
 // Claude Messages API 호출. 이미지가 있으면(Ch2) content block에 순서대로 함께 전달한다.
 export async function callClaude(params: ClaudeCallParams): Promise<string> {
   const content: Record<string, unknown>[] = [];
@@ -25,9 +29,12 @@ export async function callClaude(params: ClaudeCallParams): Promise<string> {
     },
     body: JSON.stringify({
       model: params.model,
-      max_tokens: 4096,
+      max_tokens: 8192,
       system: params.systemPrompt,
-      messages: [{ role: "user", content }],
+      messages: [
+        { role: "user", content },
+        { role: "assistant", content: JSON_PREFILL },
+      ],
     }),
   });
 
@@ -38,12 +45,23 @@ export async function callClaude(params: ClaudeCallParams): Promise<string> {
 
   const json = await res.json();
   const textBlock = json.content?.find((b: { type: string }) => b.type === "text");
-  if (!textBlock?.text) throw new Error("Claude API returned no text content");
-  return textBlock.text as string;
+  if (!textBlock?.text) {
+    throw new Error(
+      `Claude API returned no text content (stop_reason: ${json.stop_reason ?? "unknown"})`
+    );
+  }
+  if (json.stop_reason === "max_tokens") {
+    throw new Error("Claude response was truncated (hit max_tokens) — retrying");
+  }
+  // prefill로 보낸 "{" 는 응답에 포함되지 않으므로 다시 앞에 붙여준다.
+  return JSON_PREFILL + (textBlock.text as string);
 }
 
 export function extractJson(raw: string): unknown {
   const trimmed = raw.trim();
   const withoutFences = trimmed.replace(/^```(json)?/i, "").replace(/```$/, "").trim();
-  return JSON.parse(withoutFences);
+  const start = withoutFences.indexOf("{");
+  const end = withoutFences.lastIndexOf("}");
+  const sliced = start >= 0 && end > start ? withoutFences.slice(start, end + 1) : withoutFences;
+  return JSON.parse(sliced);
 }
