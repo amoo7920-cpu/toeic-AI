@@ -69,7 +69,10 @@ export function QuestionRunner({
   }, [question.id]);
 
   useEffect(() => {
-    if (phase === "response") recorder.start();
+    if (phase === "response") {
+      recorder.start();
+      response.start();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [phase]);
 
