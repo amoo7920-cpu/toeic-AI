@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "@toeic/auth";
 import { GRADE_XP_THRESHOLDS } from "@toeic/shared/parts";
 
@@ -10,6 +11,7 @@ function daysUntil(dateStr: string | null): number | null {
 // Phase 4에서 XP/스트릭/퀘스트 실데이터 연동 예정. 지금은 profile.exam_date 기반 D-day만 표시.
 export function HomeScreen() {
   const { profile } = useAuth();
+  const navigate = useNavigate();
   const dday = daysUntil(profile?.exam_date ?? null);
   const currentLevel = GRADE_XP_THRESHOLDS[0];
 
@@ -35,7 +37,10 @@ export function HomeScreen() {
         <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">Phase 4에서 연동 예정</p>
       </div>
 
-      <button className="h-14 rounded-2xl bg-gray-900 text-base font-bold text-white dark:bg-white dark:text-gray-900">
+      <button
+        onClick={() => navigate("/exam?mode=daily5")}
+        className="h-14 rounded-2xl bg-gray-900 text-base font-bold text-white dark:bg-white dark:text-gray-900"
+      >
         데일리 5 시작
       </button>
     </div>
