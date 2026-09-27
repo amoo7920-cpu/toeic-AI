@@ -20,6 +20,8 @@ export function buildSystemPrompt(params: {
   const chapter = CHAPTERS.find((c) => c.id === params.chapterId);
   if (!chapter) throw new Error(`Unknown chapter ${params.chapterId}`);
 
+  const promptFieldRule = PROMPT_FIELD_RULES[params.chapterId];
+
   const templateBlock = params.templates
     .map(
       (t) =>
@@ -48,8 +50,22 @@ ${templateBlock}
 - For opinion examples, draw on realistic workplace experiences
   (finance/accounting, leading a large system project, cross-team collaboration).
 - Do not reuse any topicKey in the exclusion list: ${JSON.stringify(params.excludedTopicKeys)}
-- Difficulty: ${params.difficulty}.`;
+- Difficulty: ${params.difficulty}.
+- ${promptFieldRule}`;
 }
+
+// 각 챕터에서 "prompt" 필드에 정확히 무엇이 들어가야 하는지 지시문.
+// (이게 없으면 모델이 "Read the text aloud..." 같은 메타 지시문을 prompt에 넣어버리는 사고가 난다.)
+const PROMPT_FIELD_RULES: Record<ChapterId, string> = {
+  1: 'CRITICAL for the "prompt" field: it must be the EXACT passage text the examinee will read aloud ' +
+    '(the announcement/advertisement/news brief itself, 40-60 words). Do NOT put instructions like ' +
+    '"Read the text aloud" or a title/label into "prompt" — that is a meta-instruction, not the passage.',
+  2: 'For the "prompt" field, use exactly: "Describe the picture in as much detail as you can." for every question.',
+  3: 'For the "prompt" field, put ONLY the interviewer\'s question sentence itself (e.g. "How often do you ...?"), ' +
+    "not any instructions or labels.",
+  4: 'For the "prompt" field, put ONLY the caller\'s spoken line itself (e.g. "Hi, I\'m calling about ...").',
+  5: 'For the "prompt" field, put ONLY the opinion question sentence itself, not any instructions or labels.',
+};
 
 export const RESPONSE_SCHEMA_HINT = `{
   "chapterId": number, "difficulty": "IH"|"AL"|"AM", "topicKey": string,
