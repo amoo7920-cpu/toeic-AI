@@ -2,10 +2,12 @@ import { useEffect, useRef, useState } from "react";
 import { useCountdown } from "./hooks/useCountdown";
 import { useRecorder } from "./hooks/useRecorder";
 import { useTTS } from "./hooks/useTTS";
+import { useSpeechTranscript } from "./hooks/useSpeechTranscript";
 import { playBeep } from "./lib/beep";
 import { StimulusView } from "./components/StimulusView";
 import { SelfScoreChecklist } from "./components/SelfScoreChecklist";
 import { CircularTimer } from "./components/CircularTimer";
+import { AIScorePanel } from "./components/AIScorePanel";
 import type { ExamQuestion } from "./lib/fetchExamQuestions";
 
 type Phase = "prep" | "response" | "review";
@@ -32,6 +34,7 @@ export function QuestionRunner({
   const [showModelAnswer, setShowModelAnswer] = useState(false);
   const { speakAsync, stop: stopTTS } = useTTS();
   const recorder = useRecorder();
+  const speech = useSpeechTranscript();
   const startedAtRef = useRef<number>(Date.now());
 
   const needsTTS = question.chapterId === 3 || question.chapterId === 4 || question.chapterId === 5;
@@ -47,6 +50,7 @@ export function QuestionRunner({
   });
   const response = useCountdown(question.responseSec, () => {
     recorder.stop();
+    speech.stop();
     setPhase("review");
   });
 
@@ -71,6 +75,7 @@ export function QuestionRunner({
   useEffect(() => {
     if (phase === "response") {
       recorder.start();
+      speech.start();
       response.start();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -129,6 +134,8 @@ export function QuestionRunner({
       {phase === "review" && (
         <div className="flex flex-col gap-4">
           {recorder.audioUrl && <audio src={recorder.audioUrl} controls className="w-full" />}
+
+          {speech.supported && <AIScorePanel questionId={question.id} transcript={speech.transcript} />}
 
           <button
             onClick={() => setShowModelAnswer((v) => !v)}
