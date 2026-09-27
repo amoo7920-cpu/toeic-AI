@@ -51,6 +51,8 @@ export function ExamSession({
       });
       await supabase.rpc("schedule_review", { p_question_id: current.id, p_score: result.totalScore });
       await supabase.rpc("award_xp", { p_amount: 15 });
+      await supabase.rpc("record_study_day");
+      await supabase.rpc("check_and_award_badges");
     }
     setScores((s) => [...s, result.totalScore]);
     setIndex((i) => i + 1);

@@ -75,6 +75,24 @@ export const GRADE_XP_THRESHOLDS = [
   { grade: "AH", xp: 10000, title: "레전드" },
 ] as const;
 
+export function getLevelProgress(xp: number) {
+  let currentIdx = 0;
+  for (let i = 0; i < GRADE_XP_THRESHOLDS.length; i++) {
+    if (xp >= GRADE_XP_THRESHOLDS[i].xp) currentIdx = i;
+  }
+  const current = GRADE_XP_THRESHOLDS[currentIdx];
+  const next = GRADE_XP_THRESHOLDS[currentIdx + 1] ?? null;
+  const progress = next ? (xp - current.xp) / (next.xp - current.xp) : 1;
+  return { current, next, progress: Math.max(0, Math.min(1, progress)) };
+}
+
+// 8-3 배지 메타데이터 (badge_code -> 표시용 정보)
+export const BADGES: Record<string, { emoji: string; label: string; desc: string }> = {
+  streak_7: { emoji: "🔥", label: "7일 연속", desc: "스트릭 7일 달성" },
+  mock_5: { emoji: "🎯", label: "모의고사 5회", desc: "실전 모의고사 5회 완료" },
+  full_time_q11: { emoji: "⏱️", label: "풀타임", desc: "Q11 60초를 꽉 채워 10회 답변" },
+};
+
 export const WORD_COUNT_RANGES: Record<string, { min: number; max: number }> = {
   "T2-PICTURE": { min: 50, max: 70 },
   "T3-LONG": { min: 55, max: 75 },
