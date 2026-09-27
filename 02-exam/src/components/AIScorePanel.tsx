@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSupabase } from "@toeic/auth";
 
 interface AIFeedback {
@@ -28,6 +28,12 @@ export function AIScorePanel({ questionId, transcript }: { questionId: string; t
     }
     setFeedback(data.feedback as AIFeedback);
   }
+
+  // 답변이 끝나 review 화면에 들어오면 버튼 없이 바로 자동 채점한다.
+  useEffect(() => {
+    if (transcript) handleScore();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [questionId]);
 
   if (!transcript) {
     return (
