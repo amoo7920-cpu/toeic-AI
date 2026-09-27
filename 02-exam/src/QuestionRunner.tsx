@@ -109,9 +109,15 @@ export function QuestionRunner({
       )}
 
       {phase === "response" && (
-        <div className="flex flex-col items-center gap-2 py-6">
+        <div className="flex flex-col items-center gap-3 py-6">
           <p className="text-sm font-semibold text-red-500">● 녹음 중 · 답변 시간</p>
           <CircularTimer remaining={response.remaining} total={question.responseSec} />
+          <button
+            onClick={() => response.skip()}
+            className="h-10 rounded-xl border border-gray-300 px-4 text-sm font-semibold text-gray-600 dark:border-gray-700 dark:text-gray-300"
+          >
+            답변 완료
+          </button>
           {recorder.error && (
             <p className="text-center text-sm text-red-500">
               {recorder.error} (마이크 권한을 확인해주세요. 답변 시간은 계속 흘러갑니다.)
