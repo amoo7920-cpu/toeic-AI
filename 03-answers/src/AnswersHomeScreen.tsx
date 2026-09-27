@@ -1,13 +1,21 @@
-import { CHAPTERS } from "@toeic/shared/parts";
+import { useState } from "react";
+import { CHAPTERS, type ChapterId } from "@toeic/shared/parts";
+import { ChapterAnswersScreen } from "./ChapterAnswersScreen";
 
-// Phase 2에서 구현: 챕터별 템플릿 뼈대 보기 · 빈칸 퀴즈 · TTS · 표현 저장
 export function AnswersHomeScreen() {
+  const [chapterId, setChapterId] = useState<ChapterId | null>(null);
+
+  if (chapterId !== null) {
+    return <ChapterAnswersScreen chapterId={chapterId} onBack={() => setChapterId(null)} />;
+  }
+
   return (
     <div className="flex flex-col gap-3 px-4 py-6">
       <h1 className="text-xl font-bold text-gray-900 dark:text-white">모범답안</h1>
       {CHAPTERS.map((c) => (
         <button
           key={c.id}
+          onClick={() => setChapterId(c.id)}
           className="flex items-center justify-between rounded-2xl border border-gray-200 p-4 text-left active:bg-gray-50 dark:border-gray-800 dark:active:bg-gray-900"
         >
           <div>
