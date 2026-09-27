@@ -38,7 +38,8 @@ Rules:
 - Follow the official TOEIC Speaking format and timing exactly.
 - Question numbers for this chapter: ${chapter.questionNos.join(", ")}.
 - Prep/response seconds per question, in order: prep=[${chapter.prepSecs.join(", ")}], response=[${chapter.responseSecs.join(", ")}].
-- Output ONLY valid JSON matching the provided schema. No markdown fences.
+- Output ONLY valid JSON matching the provided schema. No markdown fences, no code blocks,
+  no explanation before or after. Your entire response must start with "{" and end with "}".
 - Available answer templates for this chapter:
 ${templateBlock}
 - Model answers MUST use the given template skeleton (templateId).
