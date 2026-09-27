@@ -96,9 +96,15 @@ export function QuestionRunner({
       )}
 
       {phase === "prep" && (
-        <div className="flex flex-col items-center gap-2 py-6">
+        <div className="flex flex-col items-center gap-3 py-6">
           <p className="text-sm text-gray-500 dark:text-gray-400">준비 시간</p>
           <CircularTimer remaining={prep.remaining} total={question.prepSec} />
+          <button
+            onClick={() => prep.skip()}
+            className="h-10 rounded-xl border border-gray-300 px-4 text-sm font-semibold text-gray-600 dark:border-gray-700 dark:text-gray-300"
+          >
+            준비 시간 건너뛰기
+          </button>
         </div>
       )}
 

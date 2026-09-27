@@ -28,6 +28,12 @@ export function useCountdown(seconds: number, onComplete?: () => void | Promise<
     setRemaining(seconds);
     setRunning(false);
   }, [seconds]);
+  // 준비 시간 건너뛰기: 타이머를 즉시 멈추고 onComplete를 바로 실행한다.
+  const skip = useCallback(() => {
+    setRunning(false);
+    setRemaining(0);
+    onCompleteRef.current?.();
+  }, []);
 
-  return { remaining, running, start, reset };
+  return { remaining, running, start, reset, skip };
 }
